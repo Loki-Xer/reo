@@ -48,7 +48,6 @@ reo help
 reo               # home screen
 reo help          # interactive plugin browser (↑ ↓ + ENTER)
 reo <name>        # run plugin directly
-reo <alias>       # run plugin by alias
 ```
 
 ---
