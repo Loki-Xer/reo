@@ -86,6 +86,7 @@ fi
 selected=0
 
 draw_menu() {
+
     tput cup 0 0
     tput ed
 
@@ -154,6 +155,109 @@ draw_menu() {
     echo -e "\033[0;90m↑ ↓ navigate • ENTER play • q quit   [$(( selected + 1 ))/$total]\033[0m"
 }
 
+draw_player_menu() {
+
+    local options=("Stop Playback" "Back To Menu" "Quit")
+    local player_selected=0
+
+    while true; do
+
+        clear
+
+        if ! kill -0 "$PLAYER_PID" 2>/dev/null; then
+            echo ""
+            echo "Playback finished."
+            sleep 1
+            break
+        fi
+
+        echo -e "\033[1;31m"
+        echo "██╗   ██╗ ██████╗ ██╗   ██╗████████╗██╗   ██╗██████╗ ███████╗"
+        echo "╚██╗ ██╔╝██╔═══██╗██║   ██║╚══██╔══╝██║   ██║██╔══██╗██╔════╝"
+        echo " ╚████╔╝ ██║   ██║██║   ██║   ██║   ██║   ██║██████╔╝█████╗  "
+        echo "  ╚██╔╝  ██║   ██║██║   ██║   ██║   ██║   ██║██╔══██╗██╔══╝  "
+        echo "   ██║   ╚██████╔╝╚██████╔╝   ██║   ╚██████╔╝██████╔╝███████╗"
+        echo "   ╚═╝    ╚═════╝  ╚═════╝    ╚═╝    ╚═════╝ ╚═════╝ ╚══════╝"
+        echo -e "\033[0m"
+
+        echo ""
+        echo -e "\033[1;32m▶ Now Playing:\033[0m"
+        echo "${titles[$selected]}"
+        echo ""
+
+        for (( i=0; i<${#options[@]}; i++ )); do
+
+            if [[ $i -eq $player_selected ]]; then
+                echo -e "\033[1;32m▶ ${options[$i]}\033[0m"
+            else
+                echo -e "\033[0;37m  ${options[$i]}\033[0m"
+            fi
+
+        done
+
+        echo ""
+        echo -e "\033[0;90m↑ ↓ navigate • ENTER select\033[0m"
+
+        IFS= read -rsn1 key
+
+        if [[ $key == $'\x1b' ]]; then
+
+            IFS= read -rsn1 -t 0.1 key2
+
+            if [[ $key2 == '[' ]]; then
+
+                IFS= read -rsn1 -t 0.1 key3
+
+                case $key3 in
+
+                    'A')
+                        ((player_selected--))
+                        [[ $player_selected -lt 0 ]] && player_selected=$((${#options[@]} - 1))
+                        ;;
+
+                    'B')
+                        ((player_selected++))
+                        [[ $player_selected -ge ${#options[@]} ]] && player_selected=0
+                        ;;
+
+                esac
+
+            fi
+
+            continue
+        fi
+
+        if [[ $key == "" || $key == $'\n' || $key == $'\r' ]]; then
+
+            case $player_selected in
+
+                0)
+                    kill "$PLAYER_PID" 2>/dev/null
+                    echo ""
+                    echo "Stopped."
+                    sleep 1
+                    break
+                    ;;
+
+                1)
+                    break
+                    ;;
+
+                2)
+                    kill "$PLAYER_PID" 2>/dev/null
+                    clear
+                    tput cnorm
+                    tput rmcup
+                    exit 0
+                    ;;
+
+            esac
+
+        fi
+
+    done
+}
+
 tput civis
 trap 'tput cnorm; tput rmcup; exit' INT TERM EXIT
 
@@ -199,60 +303,10 @@ while true; do
         tput rmcup
         tput cnorm
 
-        echo ""
-        echo -e "\033[1;32m▶ Playing:\033[0m ${titles[$selected]}"
-        echo ""
-
         mpv "${urls[$selected]}" >/dev/null 2>&1 &
         PLAYER_PID=$!
 
-        while true; do
-
-            clear
-
-            if ! kill -0 "$PLAYER_PID" 2>/dev/null; then
-                echo ""
-                echo "Playback finished."
-                sleep 1
-                break
-            fi
-
-            echo -e "\033[1;31mYouTube Player\033[0m"
-            echo ""
-            echo -e "\033[1;32mNow Playing:\033[0m ${titles[$selected]}"
-            echo -e "\033[0;90mPID:\033[0m $PLAYER_PID"
-            echo ""
-
-            echo "1) Stop playback"
-            echo "2) Back to menu"
-            echo "3) Quit"
-            echo ""
-
-            read -rp "Choose: " opt
-
-            case $opt in
-
-                1)
-                    kill "$PLAYER_PID" 2>/dev/null
-                    echo ""
-                    echo "Stopped."
-                    sleep 1
-                    break
-                    ;;
-
-                2)
-                    break
-                    ;;
-
-                3)
-                    kill "$PLAYER_PID" 2>/dev/null
-                    clear
-                    exit 0
-                    ;;
-
-            esac
-
-        done
+        draw_player_menu
 
         tput smcup
         tput civis
