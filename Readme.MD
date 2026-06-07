@@ -4,7 +4,7 @@ A lightweight Bash CLI framework designed to run applications inside the termina
 
 ## Requirements
 
-- Linux, WSL, or Termux.
+- Linux, WSL, or Termux
 - bash 4+
 - curl
 - git
