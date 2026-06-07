@@ -6,8 +6,10 @@ fetch() {
     local RESPONSE=""
     local CURL_EXIT=0
 
+    # simple usage: fetch "url"
     if [[ $# -eq 1 && ! "$1" =~ ^- ]]; then
         URL="$1"
+        METHOD="GET"
     else
         while [[ $# -gt 0 ]]; do
             case "$1" in
@@ -25,6 +27,7 @@ fetch() {
                     ;;
                 -D|--data)
                     DATA="$2"
+                    METHOD="POST"
                     shift 2
                     ;;
                 *)
@@ -35,14 +38,15 @@ fetch() {
         done
     fi
 
-    # URL check
+    # validation
     if [[ -z "$URL" ]]; then
         echo '{"status":false,"message":"URL is required"}'
         return 1
     fi
 
-    # Request
-    if [[ -n "$DATA" ]]; then
+    # build curl
+    if [[ "$METHOD" == "POST" || "$METHOD" == "PUT" || "$METHOD" == "PATCH" ]]; then
+
         RESPONSE=$(curl -sS \
             --connect-timeout 10 \
             --max-time 30 \
@@ -50,33 +54,32 @@ fetch() {
             "${HEADERS[@]}" \
             -H "Content-Type: application/json" \
             -d "$DATA" \
-            "$URL" 2>/dev/null)
+            "$URL" 2>&1)
+        CURL_EXIT=$?   # ✅ captured RIGHT after curl, inside same scope
 
-        CURL_EXIT=$?
     else
+
         RESPONSE=$(curl -sS \
             --connect-timeout 10 \
             --max-time 30 \
-            -X "$METHOD" \
+            -X GET \
             "${HEADERS[@]}" \
-            "$URL" 2>/dev/null)
+            "$URL" 2>&1)
+        CURL_EXIT=$?   # ✅ captured RIGHT after curl
 
-        CURL_EXIT=$?
     fi
 
-    # Network error
+    # error checks
     if [[ $CURL_EXIT -ne 0 ]]; then
         echo '{"status":false,"message":"Network request failed"}'
         return 1
     fi
 
-    # Empty response
     if [[ -z "$RESPONSE" ]]; then
         echo '{"status":false,"message":"Empty response from API"}'
         return 1
     fi
 
-    # HTML error page check
     if echo "$RESPONSE" | grep -qi "<html"; then
         echo '{"status":false,"message":"API returned invalid response"}'
         return 1

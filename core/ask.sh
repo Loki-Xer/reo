@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 RESET="\033[0m"
 
 BRIGHT_CYAN="\033[96m"
