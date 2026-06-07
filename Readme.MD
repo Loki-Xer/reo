@@ -52,6 +52,15 @@ reo <name>        # run plugin directly
 
 ---
 
+
+### 4. Update
+
+```bash
+reo update
+```
+
+---
+
 ## Adding Plugins
 
 Create a `.sh` file in the `apps/` folder with these header comments:
@@ -61,7 +70,7 @@ Create a `.sh` file in the `apps/` folder with these header comments:
 # description: Says hello
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-source "$ROOT_DIR/core/index.sh"
+source "$ROOT_DIR/core/index."
 
 echo -e "  ${CYAN}${BOLD}Hello, world!${RESET}"
 ```
