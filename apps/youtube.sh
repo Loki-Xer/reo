@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # name: youtube
-# description: YouTube MPV player
+# description: YouTube player
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$ROOT_DIR/core/index.sh"
@@ -9,7 +9,7 @@ source "$ROOT_DIR/core/index.sh"
 QUERY=$(ask "Search YouTube")
 clear
 
-# Decode %20/+ to spaces for display
+
 QUERY_DISPLAY="${QUERY//%20/ }"
 QUERY_DISPLAY="${QUERY_DISPLAY//+/ }"
 
