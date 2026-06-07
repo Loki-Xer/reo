@@ -194,6 +194,7 @@ fi
 # =========================================
 
 if [[ "$CMD" == "update" ]]; then
+    chmod +x reo
     clear
 
     echo ""
@@ -202,6 +203,7 @@ if [[ "$CMD" == "update" ]]; then
     echo -e "  ${BRIGHT_CYAN}${BOLD}╚══════════════════════════════════╝${RESET}"
     echo ""
     git checkout -- reo
+
 
     # check git
     if ! command -v git >/dev/null 2>&1; then
