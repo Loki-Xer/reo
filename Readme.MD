@@ -52,15 +52,6 @@ reo <name>        # run plugin directly
 
 ---
 
-
-### 4. Update
-
-```bash
-reo update
-```
-
----
-
 ## Adding Plugins
 
 Create a `.sh` file in the `apps/` folder with these header comments:
