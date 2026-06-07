@@ -201,61 +201,11 @@ if [[ "$CMD" == "update" ]]; then
     echo -e "  ${BRIGHT_CYAN}${BOLD}║          REO UPDATER                   ║${RESET}"
     echo -e "  ${BRIGHT_CYAN}${BOLD}╚══════════════════════════════════╝${RESET}"
     echo ""
-
-    # check git
-    if ! command -v git >/dev/null 2>&1; then
-        echo -e "  ${RED}${BOLD}[ERROR]${RESET} git not installed"
-        echo ""
-        exit 1
-    fi
-
-    # verify repo
-    if [[ ! -d ".git" ]]; then
-        echo -e "  ${RED}${BOLD}[ERROR]${RESET} not a git repository"
-        echo ""
-        exit 1
-    fi
-
-    echo -e "  ${CYAN}${BOLD}Checking for updates...${RESET}"
-    echo ""
-
-    git fetch origin >/dev/null 2>&1
-
-    LOCAL=$(git rev-parse HEAD)
-    REMOTE=$(git rev-parse @{u})
-
-    if [[ "$LOCAL" == "$REMOTE" ]]; then
-        echo -e "  ${GREEN}${BOLD}✔ Already up to date${RESET}"
-        echo ""
-        exit 0
-    fi
-
-    echo -e "  ${YELLOW}${BOLD}New updates found${RESET}"
-    echo ""
-
-    echo -e "  ${MAGENTA}${BOLD}LATEST COMMITS${RESET}"
-    echo -e "  ${GRAY}──────────────────────────────────${RESET}"
-
-    git log --pretty=format:"${BRIGHT_GREEN}● %h${RESET} ${WHITE}%s${RESET} ${GRAY}(%cr)${RESET}" HEAD..@{u}
-
-    echo ""
-    echo ""
-    echo -e "  ${CYAN}${BOLD}Pulling updates...${RESET}"
-    echo ""
-
-    git pull --stat --progress
-
-    STATUS=$?
-
-    echo ""
-
-    if [[ $STATUS -eq 0 ]]; then
-        echo -e "  ${GREEN}${BOLD}✔ Update completed successfully${RESET}"
-    else
-        echo -e "  ${RED}${BOLD}✖ Update failed${RESET}"
-    fi
-
-    echo ""
+    git checkout -- reo
+    git pull
+    clear
+    echo -e "  ${GREEN}${BOLD}✔ Update completed successfully${RESET}"
+        
     exit $STATUS
 fi
 
