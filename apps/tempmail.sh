@@ -6,19 +6,12 @@
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$ROOT_DIR/core/index.sh"
 
-# =========================
-# CONFIG
-# =========================
-
 API="https://lokixer.koyeb.app/tools/tempmail"
 
 options=("new mail" "check mail" "exit")
 selected=0
 CURRENT_EMAIL=""
 
-# =========================
-# DRAW MENU
-# =========================
 
 draw_menu() {
     clear
@@ -49,9 +42,6 @@ draw_menu() {
     echo ""
 }
 
-# =========================
-# SHOW INBOX
-# =========================
 
 show_inbox() {
     local RESPONSE="$1"
@@ -70,7 +60,7 @@ show_inbox() {
     if [[ -z "$DATA" || "$DATA" == "[]" ]]; then
         echo -e "${YELLOW}📭 No messages yet.${RESET}"
     else
-        # Parse each message by splitting on @id entries
+       
         echo "$RESPONSE" | grep -oP '"@id"\s*:\s*"[^"]+.*?(?="@id"|\]\s*}|$)' | while IFS= read -r ENTRY; do
 
             FROM=$(echo "$ENTRY"  | grep -oP '"address"\s*:\s*"\K[^"]+' | head -1)
@@ -97,9 +87,6 @@ show_inbox() {
     read -rsn1
 }
 
-# =========================
-# CREATE EMAIL
-# =========================
 
 create_email() {
     local RESPONSE
@@ -115,15 +102,9 @@ create_email() {
     fi
 }
 
-# =========================
-# AUTO-CREATE ON START
-# =========================
 
 create_email
 
-# =========================
-# MAIN LOOP
-# =========================
 
 while true; do
 
@@ -153,12 +134,12 @@ while true; do
             exit 0
         fi
 
-        # NEW MAIL — GET /tempmail, silently update
+        
         if [[ "$choice" == "new mail" ]]; then
             create_email
         fi
 
-        # CHECK MAIL — POST /tempmail with {"q":"email@..."}
+        
         if [[ "$choice" == "check mail" ]]; then
             if [[ -z "$CURRENT_EMAIL" ]]; then
                 clear

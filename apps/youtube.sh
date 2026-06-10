@@ -20,9 +20,7 @@ durations=()
 authors=()
 views=()
 
-# -----------------------------
-# TITLES
-# -----------------------------
+
 while IFS= read -r line; do
     titles+=("$line")
 done < <(
@@ -31,9 +29,6 @@ done < <(
     sed 's/"title":"//;s/"//g'
 )
 
-# -----------------------------
-# URLS
-# -----------------------------
 while IFS= read -r line; do
     urls+=("$line")
 done < <(
@@ -42,9 +37,7 @@ done < <(
     sed 's/"url":"//;s/"//g'
 )
 
-# -----------------------------
-# DURATIONS
-# -----------------------------
+
 while IFS= read -r line; do
     durations+=("$line")
 done < <(
@@ -53,9 +46,7 @@ done < <(
     sed 's/"duration":"//;s/"//g'
 )
 
-# -----------------------------
-# AUTHORS
-# -----------------------------
+
 while IFS= read -r line; do
     authors+=("$line")
 done < <(
@@ -64,9 +55,6 @@ done < <(
     sed 's/"author":"//;s/"//g'
 )
 
-# -----------------------------
-# VIEWS
-# -----------------------------
 while IFS= read -r line; do
     views+=("$line")
 done < <(
@@ -75,9 +63,6 @@ done < <(
     sed 's/"views":"//;s/"//g'
 )
 
-# -----------------------------
-# SAFETY
-# -----------------------------
 if [[ ${#titles[@]} -eq 0 ]]; then
     echo "❌ No results found"
     exit 1
@@ -297,7 +282,7 @@ while true; do
         continue
     fi
 
-    # ENTER
+   
     if [[ $key == "" || $key == $'\n' || $key == $'\r' ]]; then
 
         tput rmcup
@@ -314,7 +299,7 @@ while true; do
         continue
     fi
 
-    # QUIT
+   
     if [[ $key == "q" || $key == "Q" ]]; then
         break
     fi

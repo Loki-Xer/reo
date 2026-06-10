@@ -3,24 +3,10 @@
 # name: news
 # description: Fetch latest news headlines
 
-# =========================================
-# NEWS CLI
-# =========================================
-
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 source "$ROOT_DIR/core/index.sh"
-
-# =========================================
-# NEWS SOURCES
-# =========================================
-
 names=("manorama" "mathrubhumi" "mediaone" "twentyfour" "exit")
-
 selected=0
-
-# =========================================
-# DRAW MENU
-# =========================================
 
 draw_menu() {
 
@@ -36,11 +22,11 @@ draw_menu() {
 
         if [[ "$i" -eq "$selected" ]]; then
 
-            # EXIT stays red
+           
             if [[ "${names[$i]}" == "exit" ]]; then
                 echo -e "  ${RED}${BOLD}❯ ${names[$i]}${RESET}"
             else
-                # FULL LINE GREEN (arrow + text)
+                
                 echo -e "  ${GREEN}${BOLD}❯ ${names[$i]}${RESET}"
             fi
 
@@ -55,10 +41,6 @@ draw_menu() {
     echo ""
 
 }
-
-# =========================================
-# SHOW NEWS
-# =========================================
 
 show_news() {
 
@@ -124,9 +106,6 @@ show_news() {
 
 }
 
-# =========================================
-# MAIN LOOP
-# =========================================
 
 while true; do
 
@@ -134,7 +113,7 @@ while true; do
 
     read -rsn1 key
 
-    # Arrow keys
+  
     if [[ $key == $'\x1b' ]]; then
 
         read -rsn2 key
@@ -153,12 +132,12 @@ while true; do
 
         esac
 
-    # ENTER
+   
     elif [[ $key == "" ]]; then
 
         chosen="${names[$selected]}"
 
-        # Exit
+        
         if [[ "$chosen" == "exit" ]]; then
             clear
             exit 0
