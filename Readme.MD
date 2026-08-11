@@ -13,27 +13,43 @@ A lightweight Bash CLI framework designed to run applications inside the termina
 
 ## Install
 
-### 1. Clone the repo
+### Quick install (recommended)
+
+```bash
+bash <(curl -fsSL https://lokixer.koyeb.app/install.sh)
+```
+
+Then reload your shell and verify:
+
+```bash
+source ~/.bashrc
+reo
+reo help
+```
+
+### Manual install
+
+#### 1. Clone the repo
 
 ```bash
 git clone https://github.com/Loki-Xer/reo.git
 cd reo
 ```
 
-### 2. Run the installer
+#### 2. Run the installer
 
 ```bash
 chmod +x install.sh
 ./install.sh
 ```
 
-### 3. Reload your shell
+#### 3. Reload your shell
 
 ```bash
 source ~/.bashrc
 ```
 
-### 4. Verify
+#### 4. Verify
 
 ```bash
 reo
@@ -76,11 +92,11 @@ No reinstall needed — `reo help` picks it up instantly.
 ```bash
 # remove PATH entry from ~/.bashrc
 sed -i '/# REO CLI/d' ~/.bashrc
-sed -i '/rep/d' ~/.bashrc
+sed -i '/reo/d' ~/.bashrc
 
 # delete the repo
 cd ..
-rm -rf rep
+rm -rf reo
 ```
 
 ---
