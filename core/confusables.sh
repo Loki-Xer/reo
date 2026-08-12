@@ -1,11 +1,24 @@
+#!/usr/bin/env bash
+
 generate_confusables() {
     local text="$1"
+    local limit="${2:-0}"
 
     local -a results=("")
     local -a next
     local -a chars
-    local char replacement prefix
+
+    local char
+    local replacement
+    local prefix
     local options
+
+    [[ -n "$text" ]] || return 0
+
+    if [[ "$limit" != "0" && ! "$limit" =~ ^[0-9]+$ ]]; then
+        echo "Invalid limit: $limit" >&2
+        return 1
+    fi
 
     while IFS= read -r -n1 char; do
         next=()
@@ -40,24 +53,40 @@ generate_confusables() {
             *) options="$char" ;;
         esac
 
-        # Convert replacement string into Unicode characters
         chars=()
 
         while IFS= read -r -n1 replacement; do
             [[ -n "$replacement" ]] && chars+=("$replacement")
         done <<< "$options"
 
-        # Cartesian product
         for prefix in "${results[@]}"; do
             for replacement in "${chars[@]}"; do
                 next+=("${prefix}${replacement}")
+
+                if [[ "$limit" -gt 0 && "${#next[@]}" -ge "$limit" ]]; then
+                    break 2
+                fi
             done
         done
 
         results=("${next[@]}")
 
+        [[ ${#results[@]} -gt 0 ]] || break
+
+        if [[ "$limit" -gt 0 && "${#results[@]}" -ge "$limit" ]]; then
+            break
+        fi
     done <<< "$text"
 
-    # Return every possible combination
-    printf '%s\n' "${results[@]}"
+    local count=0
+
+    for replacement in "${results[@]}"; do
+        printf '%s\n' "$replacement"
+
+        ((count++))
+
+        if [[ "$limit" -gt 0 && "$count" -ge "$limit" ]]; then
+            break
+        fi
+    done
 }
