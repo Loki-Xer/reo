@@ -8,12 +8,13 @@ source "$ROOT_DIR/core/index.sh"
 
 BOLD="\033[1m"
 
-TARGET="$1"
+DEFAULT_TARGET="duckduckgo.com"
+
+TARGET="${1:-$DEFAULT_TARGET}"
 COUNT="${2:-4}"
 
-if [[ -z "$TARGET" ]]; then
-    consolog bright_red "Usage: reo ping <host or url> [count]"
-    exit 1
+if [[ "$TARGET" == "$DEFAULT_TARGET" && -z "$1" ]]; then
+    consolog bright_black "No host given, defaulting to $DEFAULT_TARGET"
 fi
 
 if ! [[ "$COUNT" =~ ^[0-9]+$ ]] || [[ "$COUNT" -lt 1 ]]; then
