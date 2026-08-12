@@ -8,10 +8,8 @@ source "$ROOT_DIR/core/index.sh"
 
 CHAT_API="https://lokixer.koyeb.app/chat"
 CONFIG_FILE="$HOME/.reo_chat_username"
-POLL_INTERVAL=2
+POLL_INTERVAL=8
 POLL_PID=""
-
-# ---------- helpers ----------
 
 json_escape() {
     printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g'
@@ -40,8 +38,6 @@ on_interrupt() {
     exit 0
 }
 trap on_interrupt INT TERM
-
-# ---------- room screens ----------
 
 create_room() {
     clear
@@ -100,8 +96,6 @@ join_room() {
 
     enter_room "$room_id"
 }
-
-# ---------- chat loop ----------
 
 poll_loop() {
     local room_id="$1"
@@ -177,8 +171,6 @@ enter_room() {
         fetch -X POST -U "$CHAT_API/room/$room_id/messages" -D "$BODY" > /dev/null
     done
 }
-
-# ---------- main menu ----------
 
 USERNAME=$(get_username)
 options=("Create Room" "Join Room" "Exit")
